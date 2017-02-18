@@ -4,6 +4,6 @@
     "version": "0.1.0",
     "command": "C:\\Program Files (x86)\\Python\\Python36-32\\python.exe",
     "isShellCommand": true,
-    "args": ["TESTER.py"],
+    "args": ["TESTER.py", "router.py", "init.py"],
     "showOutput": "always"
 }
