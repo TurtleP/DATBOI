@@ -20,7 +20,7 @@ class Driver:
             print(my_config.read())
 
     # Write Wi-Fi config(SSID/PASS)
-    def __write_config(self)
+    def __write_config(self):
         my_config = open("conf")
         my_input = input("Enter Data: ")
         my_config.write(my_input)
