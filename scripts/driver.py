@@ -14,7 +14,16 @@ class Driver:
     # Read Wi-Fi config (SSID/PASS)
     def __read_config(self, conf):
         my_config = open(conf)
-        print(my_config.read())
+        if my_config is None:
+            self.__write_config()
+        else:
+            print(my_config.read())
+
+    # Write Wi-Fi config(SSID/PASS)
+    def __write_config(self)
+        my_config = open("conf")
+        my_input = input("Enter Data: ")
+        my_config.write(my_input)
 
     # Runs DATBOI
     def run(self):
