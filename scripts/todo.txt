@@ -1,0 +1,45 @@
+------------------------------------------------------------
+------Use this list to track bugs and features to add-------
+------------------------------------------------------------
+1. Client -> Pi connection via Socket (TCP)
+
+2. Sockets transfer data streams (double check)
+	- Use sniffer to check data flow to parse
+
+3. Data in https
+	- Encrypted with hash function
+
+4. Pi needs to verify hashing key
+	- "Psuedo Firewall"
+
+5. After key is hashed, append salt
+	- String will be hashed on WAP to check key
+
+6. 3 Attempts allowed
+	- If failed, boot from the socket
+
+7. Boot after 1 minute for key input
+	time = max((attempts - 1) * 30, 15)
+
+8. Occupied socket timeout of 60 seconds (WAP mode, inactivity)
+
+9. Scripts:
+	- Driver.py
+		- W/R/X Data
+		- Order 66
+			- Kill Switch
+		- Manage data pass from Wrapper
+
+	- Encryption.py
+		- Hash func
+
+	- Socket.py
+		- Sniffer
+		- Open/Close connections
+
+	- Firewall.py
+		- Network
+		- Application
+
+	- Wrapper.py
+		- Construct/Display GUI
