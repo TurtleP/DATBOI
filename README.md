@@ -1,4 +1,4 @@
-# Device Allowing Transfer Between Other Internet-devices
+# Device Allowing Transfer Between Other Internet-Devices
 
 **Current Version**: 0.2.0 α
 
@@ -6,17 +6,17 @@
 
 ## Created by:
 
-Asad Arif
+[Asad Arif](https://github.com/s0937323/)
 
-Curtis Parker
+[Curtis Parker](https://github.com/BlarghMyLeg)
 
-Jeremy Postelnek
+[Jeremy Postelnek](https://github.com/TurtleP/)
 
-Nicholas Jason-Roache
+[Nicholas Jason-Roache](https://github.com/Nicholas-Jason)
 
-Colby Outcalt
+[Colby Outcalt](https://github.com/BrewinFreshCode)
 
-# Languages
+# Languages and OSS
 ## Python
 - [Paramiko](http://www.paramiko.org/): Handling SSH connections to routers
 ## C
