@@ -4,14 +4,14 @@
 class SSID:
 	def __init__(self, name, bars, security):
 		self.name = name
-		self.signal = bars
+		self.signal = int(bars)
 		self.security = security
 
 	def get_name(self):
 		return self.name
 
 	def get_signal(self):
-		return int(self.signal)
+		return self.signal
 
 	def get_security(self):
 		return str(tuple(self.security))

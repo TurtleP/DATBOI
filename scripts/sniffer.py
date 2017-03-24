@@ -11,7 +11,7 @@ from ssid import SSID
 
 class Sniffer:
 	def __init__(self):
-		self.ssids = []
+		self.ssids = dict()
 		self.__sniff_ssids()
 	
 	# Sniff SSIDS
@@ -28,27 +28,22 @@ class Sniffer:
 				fields[2] = "OPEN"
 			else:
 				fields[2] = re.sub("\n", "", fields[2])
-			
-			self.ssids.append(SSID(fields[0], fields[1], fields[2].split(" ")))
+		
+			if not fields[0] in self.ssids:
+				self.ssids[fields[0]] = list()
+
+			self.ssids[fields[0]].append(SSID(fields[0], fields[1], fields[2].split(" ")))
 
 		nmcliProc.kill()
 		self.display_ssids()
 
-	def __filter(self, ssid):
-		if ssid.get_signal() < 35:
-			return False
-		
-		for i in range(len(self.ssids)):
-			if self.ssids[i].get_signal() > ssid.get_signal():
-				return True
-			else:
-				return False
-
 	def display_ssids(self):
-		for i in range(len(self.ssids)):
-			if self.__filter(self.ssids[i]):
-				print(str(self.ssids[i]) + "\n")
-	
+		for name in self.ssids:
+			self.ssids[name].sort(key=lambda x:name, reverse=True)
+		
+		for name in self.ssids:
+			print(name + " " + self.ssids[name][0].get_security() + " -> " + str(self.ssids[name][0].get_signal()))
+			
 	def get_ssid(self):
 		return input("SSID: ")
 

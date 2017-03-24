@@ -21,12 +21,15 @@ class Driver:
 
 	# Write Wi-Fi config(SSID/PASS)
 	def __write_config(self):
-		#my_config = open("conf", "w+")
+		my_config = open("conf", "w+")
 		my_sniffer = Sniffer()
-					
-		#my_config.write(my_sniffer.get_ssid() + "\n")
-		#my_config.write(my_sniffer.get_psswd() + "\n")
+		
+		ssid, passwd = my_sniffer.get_ssid(), my_sniffer.get_psswd()
+		my_config.write(ssid + "\n")
+		my_config.write(passwd + "\n")
 
+		Socket(ssid, passwd)
+	
 	# Runs DATBOI
 	def run(self):
 		self.__read_config("config")
