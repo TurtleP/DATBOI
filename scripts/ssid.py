@@ -11,10 +11,10 @@ class SSID:
 		return self.name
 
 	def get_signal(self):
-		return self.signal
+		return int(self.signal)
 
 	def get_security(self):
 		return str(tuple(self.security))
 	
 	def __str__(self):
-		return "SSID: '" + self.get_name() + "'\n ├─ SIGNAL: " + self.get_signal() + "\n └─ SECURITY: " + self.get_security()
+		return "SSID: '" + self.get_name() + "'\n ├─ SIGNAL: " + str(self.get_signal()) + "\n └─ SECURITY: " + self.get_security()
