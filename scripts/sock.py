@@ -1,24 +1,18 @@
 # socket.py
 
 import os
+import re
 
 class Socket:
 	def __init__(self, ssid, passwd):
-		res = os.system("nmcli dev wifi con  " + ssid + " " + passwd)
-		self.ssid = "PiRoute"
-		os.execute("ifconfig wifi up 10.0.0.1 netmask 255.255.255.0")
+		#res = os.system("nmcli dev wifi con  " + ssid + " " + passwd)
 		
-		self.__enable_nat()
+		self.ssid = "PiRouter"
+		self.passwd = None # Will be enforced to what we determined
+
+		self.__host(self.ssid, self.passwd)
+		
+		#self.__enable_nat()
 	
-	def __enable_nat(self):
-		os.execute("iptables --flush")
-		os.execute("iptables --table nat --flush")
-		os.execute("iptables --delete-chain")
-		os.execute("iptables --table nat --delete-chain")
-		os.execute("iptables --table nat --append POSTROUTING --out-interface wifi -j MASQUERADE")
-		os.execute("iptables --append FORWARD --in-interface wifi -j ACCEPT")
-
-		self.__share()
-
-	def __share(self):
-		os.execute("sysctl -w net.ipv4.ip_forward=1")
+	def __host(self, ssid, passwd):
+		os.system("nmcli device wifi hotspot ifname wlp7s0 ssid ayylmao password topkekayylmao")
