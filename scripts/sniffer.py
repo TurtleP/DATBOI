@@ -21,19 +21,22 @@ class Sniffer:
 		for line in nmcliProc.stdout:
 			fields = list(line.decode('utf-8').split(":"))
 
-			if fields[0] == "--":
-				fields[0] = "Hidden"
+			try:
+				if fields[0] == "--":
+					fields[0] = "Hidden"
 
-			if fields[2] == "\n":
-				fields[2] = "OPEN"
-			else:
-				fields[2] = re.sub("\n", "", fields[2])
-		
-			if not fields[0] in self.ssids:
-				self.ssids[fields[0]] = list()
+				if fields[2] == "\n":
+					fields[2] = "OPEN"
+				else:
+					fields[2] = re.sub("\n", "", fields[2])
+			
+				if not fields[0] in self.ssids:
+					self.ssids[fields[0]] = list()
 
-			self.ssids[fields[0]].append(SSID(fields[0], fields[1], fields[2].split(" ")))
-
+				self.ssids[fields[0]].append(SSID(fields[0], fields[1], fields[2].split(" ")))
+			except IndexError:
+				print("")
+				
 		nmcliProc.kill()
 		self.display_ssids()
 
