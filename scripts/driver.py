@@ -1,16 +1,24 @@
 # driver.py
 # runs -- OH SHIT HERE COME DATBOI
 
+import os
 from sock import Socket
 from sniffer import Sniffer
 
 class Driver:
 	def __init__(self):
 		print("Here come dat boi!")
+		self.killswitch_engage = True
 
 	#Wi-Fi Kill Switch
 	def order_66(self):
 		print("It will be done my lord.")
+		if self.killswitch_engage:
+			os.system("nmcli radio wifi off")
+		else:
+			os.system("nmcli radio wifi on")
+
+		self.killswitch_engage != self.killswitch_engage
 
 	# Read Wi-Fi config (SSID/PASS)
 	def __read_config(self, conf):
@@ -32,4 +40,4 @@ class Driver:
 	
 	# Runs DATBOI
 	def run(self):
-		self.__read_config("config")
+		Socket("idk", "lel")
