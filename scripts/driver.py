@@ -2,16 +2,24 @@
 # runs -- OH SHIT HERE COME DATBOI
 
 import os
+import pydoc
+
+pydoc.importfile("sock.py")
+pydoc.importfile("sniffer.py")
+
 from sock import Socket
 from sniffer import Sniffer
 
 class Driver:
 	def __init__(self):
-		print("Here come dat boi!")
+		"""Initialize DATBOI"""
+
 		self.killswitch_engage = True
 
 	#Wi-Fi Kill Switch
 	def order_66(self):
+		"""Toggle the WiFi radio"""
+
 		print("It will be done my lord.")
 		if self.killswitch_engage:
 			os.system("nmcli radio wifi off")
@@ -22,6 +30,8 @@ class Driver:
 
 	# Read Wi-Fi config (SSID/PASS)
 	def __read_config(self, conf):
+		"""Read config. If it fails, create one."""
+
 		try:
 			my_config = open(conf, "rb")
 		except FileNotFoundError:
@@ -29,6 +39,11 @@ class Driver:
 
 	# Write Wi-Fi config(SSID/PASS)
 	def __write_config(self):
+		"""
+		Asks for input and creates a new config
+		with this data (SSID, PASSWD)
+		"""
+
 		my_config = open("conf", "w+")
 		my_sniffer = Sniffer()
 		
@@ -40,4 +55,5 @@ class Driver:
 	
 	# Runs DATBOI
 	def run(self):
-		Socket("idk", "lel")
+		"""OH SNAP HERE COME DATBOI"""
+		#Socket("idk", "lel")
