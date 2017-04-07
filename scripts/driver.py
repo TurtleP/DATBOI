@@ -56,4 +56,4 @@ class Driver:
 	# Runs DATBOI
 	def run(self):
 		"""OH SNAP HERE COME DATBOI"""
-		#Socket("idk", "lel")
+		Socket("idk", "lel")
