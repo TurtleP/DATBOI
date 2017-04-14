@@ -5,9 +5,6 @@ import os
 import pydoc
 import gui
 
-pydoc.importfile("sock.py")
-pydoc.importfile("sniffer.py")
-
 from sock import Socket
 from sniffer import Sniffer
 
@@ -52,9 +49,9 @@ class Driver:
 		my_config.write(ssid + "\n")
 		my_config.write(passwd + "\n")
 
-		Socket(ssid, passwd)
+		#Socket(ssid, passwd)
 	
 	# Runs DATBOI
 	def run(self):
 		"""OH SNAP HERE COME DATBOI"""
-		Socket("idk", "lel")
+		#Socket("idk", "lel")

@@ -49,8 +49,8 @@ class Socket:
 		conn_grep = subprocess.Popen(["grep", self.ssid], stdin=connections.stdout, stdout=subprocess.PIPE)
 			
 		connections.stdout.close()
-		if not re.search("\w+", conn_grep.communicate[0].decode("utf-8")).group is None:
-			print("[" + str(round(time.time() - self.start_time, 3)) + "] :: Connection already exists. Starting.."
+		if not re.search("\w+", conn_grep.communicate[0].decode("utf-8")).group(0) is None:
+			print("[" + str(round(time.time() - self.start_time, 3)) + "] :: Connection already exists. Starting..")
 			try:
 				subprocess.check_output(["nmcli", "connection", "up", self.ssid], stdout=subprocess.PIPE)
 			except subprocess.CalledProcessError:
