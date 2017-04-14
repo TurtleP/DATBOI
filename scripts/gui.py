@@ -4,7 +4,7 @@ from tkinter import messagebox
 #Define the frame
 top = Tk()
 top.resizable(width=False, height=False)
-top.geometry('{}x{}'.format(500, 250)) #Formatted as W * H
+top.geometry('{}x{}'.format(400, 256)) #Formatted as W * H
 top.wm_title("Here Come DATBOI!")
 
 #Add a label to the frame
