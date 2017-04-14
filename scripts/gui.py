@@ -15,6 +15,8 @@ graphics.append(PhotoImage(file="assets/wifi.png"))
 graphics.append(PhotoImage(file="assets/about.png"))
 graphics.append(PhotoImage(file="assets/debug.png"))
 
+canvas_elements = []
+
 datBoi = PhotoImage(file="assets/datboi.png")
 
 for i in range(len(graphics)):
@@ -27,6 +29,13 @@ for i in range(len(graphics)):
 	configButton.place(rely=i/8, width=32, height=32)
 	buttons.append(configButton)
 
+renderCanvas = Canvas(top, highlightthickness=0)
+renderCanvas["background"] = "#263238"
+renderCanvas.place(x=32, width=368, height=256)
+
+ssid_text = ""
+currentTab = 1
+
 def checkOpen(button):
 	for i in range(len(graphics)):
 		if i != button:
@@ -35,9 +44,37 @@ def checkOpen(button):
 		else:
 			buttons[button]["background"] = "#263238"
 			buttons[button]["activebackground"] = "#263238"
+			currentTab = i
+	
+	renderCanvas.delete(ALL)
+	renderCanvas.create_image(270, 130, image=datBoi)
+
+def key(event):
+	if event.char == event.keysym:
+		if currentTab == 1:
+			renderCanvas.delete(canvas_elements[0])
+			ssid_text += event.char
+			canvas_elements[0] = renderCanvas.create_text(158, 80, fill="#FFFFFF", text=ssid_text, font=("Roboto Regular", 12, "normal"))
+
+top.bind_all('<Key>', key)
+
+def motion(event):
+	x, y = event.x, event.y
+
+top.bind('<Motion>', motion)
+
+def clicked(event):
+	x, y = event.x, event.y
+
+top.bind("<Button-1>", clicked)
 
 def openMain(button):
 	checkOpen(button)
+
+	renderCanvas.create_text(180, 24, fill="#FFFFFF", text="Acess Point Configuration", font=("Roboto Regular", 18, "normal"))
+	
+	canvas_elements.append(renderCanvas.create_text(158, 80, fill="#FAFAFA", text="SSID Name", font=("Roboto Regular", 12, "normal")))
+	renderCanvas.create_line(112, 89, 256, 89, fill="#37474F")
 
 def openClients(button):
    checkOpen(button)
@@ -47,11 +84,6 @@ def openAbout(button):
 
 def openDebug(button):
 	checkOpen(button)
-
-renderCanvas = Canvas(top, highlightthickness=0)
-renderCanvas["background"] = "#263238"
-renderCanvas.create_image(270, 130, image=datBoi)
-renderCanvas.place(x=32, width=368, height=256)
 
 strip = Label(top)
 strip.place(y=4 * 32, width=32, height=124)
