@@ -23,7 +23,6 @@
 - [Passlib](https://passlib.readthedocs.io/en/stable/): Password encryption
 - [Network Manager](https://wiki.gnome.org/Projects/NetworkManager): Wi-Fi Hotspot Configuration
 - **Network Tools**
-- **Network Manager**
 
 # Oh snap, here comes DATBOI!
 DATBOI is an attempt to create an open-source and *safe* alternative to current router standards. Python will communicate with both the router and C to monitor internet traffic via [HTTPS](https://techterms.com/definition/https). Contrary to normal standards, it will enforce this rule and hide the [SSID](https://techterms.com/definition/ssid) of the router from normal view. DATBOI will also be more secure by not allowing for backwards compatibility with older schemas that other devices follow.
