@@ -3,6 +3,7 @@
 
 import os
 import pydoc
+import gui
 
 pydoc.importfile("sock.py")
 pydoc.importfile("sniffer.py")
