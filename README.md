@@ -1,8 +1,8 @@
 # Device Allowing Transfer Between Other Internet-Devices
 
-**Current Version**: 0.3.0 α
+**Current Version**: 0.5.0 α
 
-**Release Date**: 2017-03-16
+**Release Date**: 2017-04-14
 
 ## Created by:
 
@@ -19,7 +19,8 @@
 # Languages and OSS
 ## Python
 - [Paramiko](http://www.paramiko.org/): Handling SSH connections to routers
-- [PyQt5](http://pyqt.sourceforge.net/Docs/PyQt5/): Graphical User Interface
+- [Tkinter](http://www.tcl.tk/): Graphical User Interface
+- [Passlib](https://passlib.readthedocs.io/en/stable/): Password encryption
 - **Network Tools**
 - **Network Manager**
 
