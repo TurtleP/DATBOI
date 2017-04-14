@@ -21,6 +21,7 @@
 - [Paramiko](http://www.paramiko.org/): Handling SSH connections to routers
 - [Tkinter](http://www.tcl.tk/): Graphical User Interface
 - [Passlib](https://passlib.readthedocs.io/en/stable/): Password encryption
+- [Network Manager](https://wiki.gnome.org/Projects/NetworkManager): Wi-Fi Hotspot Configuration
 - **Network Tools**
 - **Network Manager**
 
