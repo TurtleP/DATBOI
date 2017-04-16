@@ -2,7 +2,6 @@
 # runs -- OH SHIT HERE COME DATBOI
 
 import os
-import pydoc
 import gui
 
 from sock import Socket

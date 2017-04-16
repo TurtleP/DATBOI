@@ -6,9 +6,6 @@ import signal
 import subprocess
 import sys
 import re
-import pydoc
-
-pydoc.importfile("ssid.py")
 
 from ssid import SSID
 
