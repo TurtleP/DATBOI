@@ -1,6 +1,10 @@
 from tkinter import *
 from textbox import TextBox
 from button import CButton
+from driver import Driver
+from init import logger
+
+DATBOI = Driver()
 
 # Define the frame
 top = Tk()
@@ -16,6 +20,8 @@ graphics.append(PhotoImage(file="assets/gears.png"))
 graphics.append(PhotoImage(file="assets/wifi.png"))
 graphics.append(PhotoImage(file="assets/about.png"))
 graphics.append(PhotoImage(file="assets/debug.png"))
+
+search_image = PhotoImage(file="assets/search.png")
 
 # Canvas items
 canvas_items = list()
@@ -67,15 +73,15 @@ def checkOpen(button):
 # Add an item with its ID from the 
 # canvas to the object array
 def add_item(item, indx=currentTab):
-	canvas_items[currentTab].append(item)
+	canvas_items[indx].append(item)
 
 ####MAIN TAB
 renderCanvas.create_image(270, 130, image=datBoi)
 
 add_item(renderCanvas.create_text(30, 24, fill="#FFFFFF", text="Access Point Configuration", anchor="w", font=("assets/Roboto-Regular", 18, "normal")))
 	
-ssid_textbox = TextBox(renderCanvas, 112, 80, "SSID Name")
-passwd_textbox = TextBox(renderCanvas, 112, 145, "Password", True)
+ssid_textbox = TextBox(renderCanvas, 112, 80, 144, "SSID Name")
+passwd_textbox = TextBox(renderCanvas, 112, 145, 144, "Password", True)
 
 for item in ssid_textbox.get_items():
 	add_item(item)
@@ -83,9 +89,29 @@ for item in ssid_textbox.get_items():
 for item in passwd_textbox.get_items():
 	add_item(item)
 
-start_button = CButton(renderCanvas, 172, 210, lambda: print("ayy"))
+def load_DATBOI():
+	ssid_is_valid = DATBOI.validate(ssid_textbox)
+	pass_is_valid = DATBOI.validate(passwd_textbox)
+
+	if ssid_is_valid and pass_is_valid:
+		DATBOI.run(ssid_textbox.get_text(), passwd_textbox.get_text())
+
+start_button = CButton(renderCanvas, 172, 210, load_DATBOI)
 add_item(start_button.get_tag())
 ###END MAIN
+
+####DEBUG TAB
+add_item(renderCanvas.create_image(4, 4, anchor="nw", image=search_image), 3)
+debug_id = renderCanvas.create_text(4, 32, fill="#FFFFFF", text=logger.get_logs(), anchor="nw", font=("assets/Roboto-Regular.ttf", 10, "normal"))
+add_item(debug_id, 3)
+
+def update_logs():
+	renderCanvas.itemconfig(debug_id, text=logger.get_logs())
+	top.after(500, update_logs)
+
+search_textbox = TextBox(renderCanvas, 24, 4, 80, "Filter")
+update_logs()
+####END DEBUG
 
 # Left click mouse events
 def click(event):
@@ -127,6 +153,7 @@ def openAbout(button):
 
 def openDebug(button):
 	checkOpen(button)
+	logger.log("Opened logs!")
 
 # Spacing stuff for fanciness
 strip = Label(top)

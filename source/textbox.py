@@ -4,10 +4,10 @@ from tkinter import *
 import re
 
 class TextBox:
-	def __init__(self, parent, x, y, hint, passwd=False):
+	def __init__(self, parent, x, y, width, hint, passwd=False):
 		self.x = x
 		self.y = y
-		self.width = 144
+		self.width = width
 		self.height = 16
 
 		self.error_image = PhotoImage(file="assets/error_text.png")
@@ -22,7 +22,7 @@ class TextBox:
 
 		self.passwd = passwd
 
-		self.underline_id = parent.create_line(x, y + 16, x+ 144, y + 16, fill="#37474F")
+		self.underline_id = parent.create_line(x, y + 16, x + width, y + 16, fill="#37474F")
 		self.id = parent.create_text(x, y + 8, anchor="w", fill="#9E9E9E", text=hint, font=("assets/Roboto-Regular.ttf", 12, "normal"))
 		self.error_id = parent.create_text(x, y + 24, anchor="w", fill="#E53935", text="", font=("assets/Roboto-Regular.ttf", 8, "normal"))
 		self.icon_image_id = self.parent.create_image(self.x + self.width - 8, self.y + 8, image=self.inactive_image)
@@ -45,6 +45,10 @@ class TextBox:
 
 			color = "#FFFFFF"
 			text = self.text
+			
+			if self.passwd:
+				text = re.sub("\w", "*", self.text)
+			
 			if len(self.text) == 0:
 				color="#9E9E9E"
 				text = self.hint
@@ -64,11 +68,24 @@ class TextBox:
 		else:
 			self.set_status(self.inactive_image)
 
+	def get_length(self):
+		return len(self.text)
+
+	def is_passwd(self):
+		return self.passwd
+
 	def get_active(self):
 		return self.highlight
 
 	def get_items(self):
 		return (self.id, self.underline_id, self.error_id, self.icon_image_id)
+
+	def get_text(self):
+		return self.text
+
+	def clear_error(self):
+		self.parent.itemconfig(self.error_id, text="")
+		self.set_status(self.inactive_image)
 
 	def error(self, text):
 		self.parent.itemconfig(self.error_id, text=text)

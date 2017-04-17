@@ -2,16 +2,21 @@
 # runs -- OH SHIT HERE COME DATBOI
 
 import os
-import gui
 
 from sock import Socket
 from sniffer import Sniffer
+from init import logger
 
 class Driver:
 	def __init__(self):
 		"""Initialize DATBOI"""
 
 		self.killswitch_engage = True
+		self.VALIDATION_ERRORS = {
+			"ERR_EMPTY": -1,
+			"ERR_LENGTH": -2,
+			"ERR_INSECURE": -3
+		}
 
 	#Wi-Fi Kill Switch
 	def order_66(self):
@@ -49,8 +54,36 @@ class Driver:
 		my_config.write(passwd + "\n")
 
 		#Socket(ssid, passwd)
+
+	def set_error(self, field, valid_err=0):
+		error_string = None
+		if valid_err == -1:
+			error_string = "Field required"
+		elif valid_err == -2:
+			error_string = "Length must be 10+"
+		elif valid_err == -3:
+			error_string = "Insecure passphrase"
 	
+		if not error_string is None:
+			field.error(error_string)
+			return False
+		field.clear_error()
+		return True
+
+
+	def validate(self, field):
+		if field.get_text() == "" or field.get_text() is None:
+			return self.set_error(field, self.VALIDATION_ERRORS["ERR_EMPTY"])
+		elif field.is_passwd(): 
+			if field.get_length() < 10:
+				return self.set_error(field, self.VALIDATION_ERRORS["ERR_LENGTH"]) 
+		return self.set_error(field)
+
 	# Runs DATBOI
-	def run(self):
+	def run(self, ssid=None, passwd=None):
 		"""OH SNAP HERE COME DATBOI"""
-		#Socket("idk", "lel")
+		logger.log("Starting DATBOI..")
+		if (ssid == "" or ssid is None) and (passwd == "" or passwd is None):
+			return self.VALIDATION_ERRORS["ERR_EMPTY"]
+		else:
+			Socket(ssid, passwd)
