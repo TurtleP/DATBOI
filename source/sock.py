@@ -54,7 +54,7 @@ class Socket:
 		if not re.search("\w+", conn_grep.communicate()[0].decode("utf-8")) is None:
 			logger.log(":: Connection already exists. Starting..")
 			try:
-				subprocess.check_output(["nmcli", "connection", "up", self.ssid], stdout=subprocess.PIPE)
+				subprocess.check_output(["nmcli", "connection", "up", self.ssid])
 			except subprocess.CalledProcessError:
 				logger.log(":: Failed to start hotspot " + self.ssid)
 		else:
@@ -80,12 +80,16 @@ class Socket:
 
 			try:	
 				logger.log(":: Connection added.")
-				subprocess.check_output(["nmcli", "connection", "add", "connection.autoconnect", "true", "connection.id", self.ssid, "connection.id", self.ssid, "connection.interface-name", self.ssid, "connection.type", "802-11-wireless", "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "ipv4.method", "shared"])
+				subprocess.check_output(["nmcli", "connection", "add", "connection.id", self.ssid, "connection.interface-name", self.ssid, "connection.autoconnect", "true", "connection.type", "802-11-wireless", "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "802-11-wireless-security.wep-key-type", "2", "ipv4.method", "shared"])
 			except (subprocess.CalledProcessError, OSError):
 				logger.log(":: Connection already exists!")
 
 		try:
-			subprocess.check_output(["nmcli", "connection", "up", self.ssid], stdout=subprocess.PIPE)
+			config = subprocess.Popen(["iwconfig", self.ssid], stdout=subprocess.PIPE).communicate()[0].decode("utf-8")
+			if re.search("Master", config) is None:
+				logger.log("Failed to connect")
+			else:
+				logger.log("Connection successful")
 		except subprocess.CalledProcessError:
 			logger.log(":: Failed to start hotspot " + self.ssid)
 
