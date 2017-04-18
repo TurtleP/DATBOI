@@ -4,7 +4,7 @@ from tkinter import *
 import re
 
 class TextBox:
-	def __init__(self, parent, x, y, width, hint, passwd=False):
+	def __init__(self, parent, x, y, width, hint, passwd=False, maxlen=13):
 		self.x = x
 		self.y = y
 		self.width = width
@@ -17,6 +17,8 @@ class TextBox:
 		self.text = ""
 		self.hint = hint
 
+		self.maxlen = maxlen
+
 		self.parent = parent
 		self.highlight = False
 
@@ -28,7 +30,7 @@ class TextBox:
 		self.icon_image_id = self.parent.create_image(self.x + self.width - 8, self.y + 8, image=self.inactive_image)
 
 	def key(self, event):
-		if len(self.text) > 13 or not self.highlight:
+		if len(self.text) > self.maxlen or not self.highlight:
 			return
 
 		if event.char == event.keysym or event.char == " ":
@@ -40,7 +42,7 @@ class TextBox:
 
 			self.parent.itemconfig(self.id, fill="#FFFFFF", text=text)
 		
-		if event.char == "\b":
+		if event.keysym == "BackSpace":
 			self.text = self.text[:-1]
 
 			color = "#FFFFFF"

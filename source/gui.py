@@ -109,7 +109,10 @@ def update_logs():
 	renderCanvas.itemconfig(debug_id, text=logger.get_logs())
 	top.after(500, update_logs)
 
-search_textbox = TextBox(renderCanvas, 24, 4, 80, "Filter")
+search_textbox = TextBox(renderCanvas, 24, 4, 80, "Filter", False, 10)
+for item in search_textbox.get_items():
+	add_item(item, 3)
+
 update_logs()
 ####END DEBUG
 
@@ -129,6 +132,11 @@ def click(event):
 		
 		if start_button.click(x, y):
 			start_button.func()
+	elif currentTab == 3:
+		if search_textbox.click(x, y):
+			search_textbox.set_active(True, True)
+		else:
+			search_textbox.set_active(False, False)
 
 # Keybinding events
 def key(event):
@@ -137,6 +145,13 @@ def key(event):
 			ssid_textbox.key(event)
 		elif passwd_textbox.get_active():
 			passwd_textbox.key(event)
+	elif currentTab == 3:
+		if search_textbox.get_active():
+			search_textbox.key(event)
+			if search_textbox.get_length() > 0:
+				logger.filter(search_textbox.get_text())
+			else:
+				logger.clear_filter()
 
 top.bind_all("<Key>", key)	
 top.bind("<Button-1>", click)
@@ -153,7 +168,6 @@ def openAbout(button):
 
 def openDebug(button):
 	checkOpen(button)
-	logger.log("Opened logs!")
 
 # Spacing stuff for fanciness
 strip = Label(top)

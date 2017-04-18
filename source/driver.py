@@ -17,6 +17,7 @@ class Driver:
 			"ERR_LENGTH": -2,
 			"ERR_INSECURE": -3
 		}
+		logger.log("Here come DATBOI")
 
 	#Wi-Fi Kill Switch
 	def order_66(self):
