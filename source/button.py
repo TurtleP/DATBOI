@@ -21,7 +21,7 @@ class CButton:
 		return x > self.x and x < self.x + self.width and y > self.y and y < self.y + self.height
 
 	def toggle(self):
-		self.pressed != self.pressed
+		self.pressed = not self.pressed
 
 	def get_pressed(self):
 		return self.pressed

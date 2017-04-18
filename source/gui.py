@@ -96,9 +96,11 @@ def load_DATBOI():
 	if ssid_is_valid and pass_is_valid:
 		start_button.toggle()
 
-		if not start_button.get_pressed():
+		if start_button.get_pressed():
+			start_button.set_image(stop_button)
 			DATBOI.run(ssid_textbox.get_text(), passwd_textbox.get_text())
 		else:
+			start_button.set_image(start_button.graphic)
 			DATBOI.order_66()
 
 start_button = CButton(renderCanvas, 172, 210, load_DATBOI)
