@@ -29,19 +29,7 @@ class TextBox:
 		self.error_id = parent.create_text(x, y + 24, anchor="w", fill="#E53935", text="", font=("assets/Roboto-Regular.ttf", 8, "normal"))
 		self.icon_image_id = self.parent.create_image(self.x + self.width - 8, self.y + 8, image=self.inactive_image)
 
-	def key(self, event):
-		if len(self.text) > self.maxlen or not self.highlight:
-			return
-
-		if event.char == event.keysym or event.char == " ":
-			self.text += event.char
-
-			text = self.text
-			if self.passwd:
-				text = re.sub("\w", "*", self.text)
-
-			self.parent.itemconfig(self.id, fill="#FFFFFF", text=text)
-		
+	def key(self, event):	
 		if event.keysym == "BackSpace":
 			self.text = self.text[:-1]
 
@@ -59,7 +47,19 @@ class TextBox:
 		elif event.keysym == "Escape" or event.keysym == "Return":
 			self.set_status(self.inactive_image)
 			self.highlight = False
-	
+
+		if len(self.text) > self.maxlen or not self.highlight:
+			return
+
+		if event.char == event.keysym or event.char == " ":
+			self.text += event.char
+
+			text = self.text
+			if self.passwd:
+				text = re.sub("\w", "*", self.text)
+
+			self.parent.itemconfig(self.id, fill="#FFFFFF", text=text)
+
 	def click(self, x, y):
 		return x > self.x and x < self.x + self.width and y > self.y and y < self.y + self.height
 	

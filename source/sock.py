@@ -17,8 +17,8 @@ class Socket:
 		@passwd: Router password
 		"""
 		
-		self.ssid = "PiRouter"
-		self.passwd = "HERECOMEDATBOI" # Will be enforced to what we determined
+		self.ssid = ssid
+		self.passwd = passwd # Will be enforced to what we determined
 		self.dev = None
 
 		self.start_time = time.time()
@@ -41,7 +41,7 @@ class Socket:
 			logger.log(":: Adding virtual network: " + self.ssid)
 			subprocess.check_output(["iw", "dev", self.dev, "interface", "add", self.ssid, "type", "station"])
 		except (subprocess.CalledProcessError, OSError):
-			logger.log(":: Virtual network alrady created.")
+			logger.log(":: Couldn't add virtual network: already exists.")
 			
 		self.__create_hotspot()
 
@@ -51,7 +51,7 @@ class Socket:
 		conn_grep = subprocess.Popen(["grep", self.ssid], stdin=connections.stdout, stdout=subprocess.PIPE)
 			
 		connections.stdout.close()
-		if not re.search("\w+", conn_grep.communicate[0].decode("utf-8")).group(0) is None:
+		if not re.search("\w+", conn_grep.communicate()[0].decode("utf-8")) is None:
 			logger.log(":: Connection already exists. Starting..")
 			try:
 				subprocess.check_output(["nmcli", "connection", "up", self.ssid], stdout=subprocess.PIPE)
@@ -80,6 +80,12 @@ class Socket:
 
 			try:	
 				logger.log(":: Connection added.")
-				subprocess.check_output(["nmcli", "connection", "add", "connection.id", self.ssid, "connection.id", self.ssid, "connection.interface-name", self.ssid, "connection.type", "802-11-wireless", "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "ipv4.method", "shared"])
+				subprocess.check_output(["nmcli", "connection", "add", "connection.autoconnect", "true", "connection.id", self.ssid, "connection.id", self.ssid, "connection.interface-name", self.ssid, "connection.type", "802-11-wireless", "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "ipv4.method", "shared"])
 			except (subprocess.CalledProcessError, OSError):
 				logger.log(":: Connection already exists!")
+
+		try:
+			subprocess.check_output(["nmcli", "connection", "up", self.ssid], stdout=subprocess.PIPE)
+		except subprocess.CalledProcessError:
+			logger.log(":: Failed to start hotspot " + self.ssid)
+

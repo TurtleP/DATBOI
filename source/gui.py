@@ -94,10 +94,17 @@ def load_DATBOI():
 	pass_is_valid = DATBOI.validate(passwd_textbox)
 
 	if ssid_is_valid and pass_is_valid:
-		DATBOI.run(ssid_textbox.get_text(), passwd_textbox.get_text())
+		start_button.toggle()
+
+		if not start_button.get_pressed():
+			DATBOI.run(ssid_textbox.get_text(), passwd_textbox.get_text())
+		else:
+			DATBOI.order_66()
 
 start_button = CButton(renderCanvas, 172, 210, load_DATBOI)
 add_item(start_button.get_tag())
+
+stop_button = PhotoImage(file="assets/stop.png")
 ###END MAIN
 
 ####DEBUG TAB
@@ -109,7 +116,7 @@ def update_logs():
 	renderCanvas.itemconfig(debug_id, text=logger.get_logs())
 	top.after(500, update_logs)
 
-search_textbox = TextBox(renderCanvas, 24, 4, 80, "Filter", False, 10)
+search_textbox = TextBox(renderCanvas, 24, 4, 120, "Filter", False, 10)
 for item in search_textbox.get_items():
 	add_item(item, 3)
 

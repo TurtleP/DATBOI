@@ -2,6 +2,8 @@
 # runs -- OH SHIT HERE COME DATBOI
 
 import os
+import signal
+import subprocess
 
 from sock import Socket
 from sniffer import Sniffer
@@ -18,16 +20,17 @@ class Driver:
 			"ERR_INSECURE": -3
 		}
 		logger.log("Here come DATBOI")
+		self.ssid = None
 
 	#Wi-Fi Kill Switch
 	def order_66(self):
 		"""Toggle the WiFi radio"""
 
-		print("It will be done my lord.")
+		logger.log("It will be done my lord.")
 		if self.killswitch_engage:
-			os.system("nmcli radio wifi off")
+			subprocess.check_output(["nmcli", "connection", "down", self.ssid])
 		else:
-			os.system("nmcli radio wifi on")
+			subprocess.check_output(["nmcli", "connection", "up", self.ssid])
 
 		self.killswitch_engage != self.killswitch_engage
 
@@ -49,12 +52,6 @@ class Driver:
 
 		my_config = open("conf", "w+")
 		my_sniffer = Sniffer()
-		
-		ssid, passwd = my_sniffer.get_ssid(), my_sniffer.get_psswd()
-		my_config.write(ssid + "\n")
-		my_config.write(passwd + "\n")
-
-		#Socket(ssid, passwd)
 
 	def set_error(self, field, valid_err=0):
 		error_string = None
@@ -66,11 +63,11 @@ class Driver:
 			error_string = "Insecure passphrase"
 	
 		if not error_string is None:
+			logger.log(error_string)
 			field.error(error_string)
 			return False
 		field.clear_error()
 		return True
-
 
 	def validate(self, field):
 		if field.get_text() == "" or field.get_text() is None:
@@ -87,4 +84,5 @@ class Driver:
 		if (ssid == "" or ssid is None) and (passwd == "" or passwd is None):
 			return self.VALIDATION_ERRORS["ERR_EMPTY"]
 		else:
+			self.ssid = ssid
 			Socket(ssid, passwd)
