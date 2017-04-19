@@ -1,4 +1,4 @@
-from passlib.hash import pbkdf2_sha256
+from passlib.hash import pbkdf2_sha512
 from passlib import pwd
 from gui import DATBOI
 from init import logger
@@ -9,9 +9,9 @@ password = "thisisapassword"
 print (password)
 
 #Hash the password, the function also generates and adds a salt
-hash = pbkdf2_sha256.hash(password)
+hash = pbkdf2_sha512.hash(password)
 print (hash)
 
 #Attempt to verify the password
-print(pbkdf2_sha256.verify(password, hash))
-print(pbkdf2_sha256.verify("AYYYYY LMAO", hash))
+print(pbkdf2_sha512.verify(password, hash))
+print(pbkdf2_sha512.verify("AYYYYY LMAO", hash))
