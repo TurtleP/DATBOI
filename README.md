@@ -1,8 +1,8 @@
 # Device Allowing Transfer Between Other Internet-Devices
 
-**Current Version**: 0.5.0 α
+**Current Version**: 0.7.0 α
 
-**Release Date**: 2017-04-14
+**Release Date**: 2017-04-19
 
 ## Created by:
 
