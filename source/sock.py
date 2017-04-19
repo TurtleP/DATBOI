@@ -69,7 +69,7 @@ class Socket:
 			logger.log(":: Acess Point BSSID: " + bssid)
 
 			ifconfig_process = subprocess.Popen(["ifconfig", self.ssid], stdout=subprocess.PIPE)
-			ether_egrep = subprocess.Popen(["egrep", "ether"], stdin=ifconfig_process.stdout, stdout=subprocess.PIPE)
+			ether_egrep = subprocess.Popen(["egrep", "HWaddr"], stdin=ifconfig_process.stdout, stdout=subprocess.PIPE)
 
 			ifconfig_process.stdout.close()
 			mac_addr = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", ether_egrep.communicate()[0].decode("utf-8")).group(0).upper()
