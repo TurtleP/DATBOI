@@ -30,16 +30,14 @@ class Socket:
 
 		logger.log("Getting WiFi Information")
 
-		dmesg = subprocess.Popen(["dmesg"], stdout=subprocess.PIPE)
-		grep = subprocess.Popen(["grep", "wlan0"], stdin=dmesg.stdout, stdout=subprocess.PIPE)
-		dmesg.stdout.close()
-		self.dev = re.search("(wlan0): ", grep.communicate()[0].decode("utf-8")).group(1)
+		iw_dev = subprocess.Popen(["iw", "dev"], stdout=subprocess.PIPE)
+		self.dev = re.search("(wlp.+|wlan.+)", iw_dev.communicate()[0].decode("utf-8")).group(0)
 		
 		logger.log(":: WiFi Device: " + self.dev)
 
 		try:
 			logger.log(":: Adding virtual network: " + self.ssid)
-			subprocess.check_output(["iw", "dev", self.dev, "interface", "add", self.ssid, "type", "__ap"])
+			subprocess.check_output(["iw", "dev", self.dev, "interface", "add", self.ssid, "type", "mgd"])
 		except (subprocess.CalledProcessError, OSError):
 			logger.log(":: Couldn't add virtual network: already exists.")
 			
@@ -83,7 +81,7 @@ class Socket:
 				logger.log(":: Connection already exists!")
 
 		try:
-			subprocess.check_output(["nmcli", "connnection", "up", self.ssid])
+			subprocess.check_output(["nmcli", "connection", "up", self.ssid])
 			config = subprocess.Popen(["nmcli", "connection"], stdout=subprocess.PIPE).communicate()[0].decode("utf-8")
 			if re.search(self.ssid, config) is None:
 				logger.log("Failed to connect")
