@@ -37,7 +37,7 @@ class Socket:
 
 		try:
 			logger.log(":: Adding virtual network: " + self.ssid)
-			subprocess.check_output(["iw", "dev", self.dev, "interface", "add", self.ssid, "type", "mgd"])
+			subprocess.check_output(["iw", "dev", self.dev, "interface", "add", self.ssid, "type", "managed"])
 		except (subprocess.CalledProcessError, OSError):
 			logger.log(":: Couldn't add virtual network: already exists.")
 			
