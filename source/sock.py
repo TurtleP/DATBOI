@@ -33,7 +33,7 @@ class Socket:
 		dmesg = subprocess.Popen(["dmesg"], stdout=subprocess.PIPE)
 		grep = subprocess.Popen(["grep", "wlan0"], stdin=dmesg.stdout, stdout=subprocess.PIPE)
 		dmesg.stdout.close()
-		self.dev = re.search("(\w+): ", grep.communicate()[0].decode("utf-8")).group(1)
+		self.dev = re.search("(wlan0): ", grep.communicate()[0].decode("utf-8")).group(1)
 		
 		logger.log(":: WiFi Device: " + self.dev)
 
