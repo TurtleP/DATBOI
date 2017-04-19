@@ -78,7 +78,7 @@ class Socket:
 			try:	
 				logger.log(":: Connection added.")
 				subprocess.check_output(["nmcli", "connection", "add", "con-name", self.ssid, "type", "wifi", "ifname", self.ssid, "ssid", self.ssid])
-				subprocess.check_output(["nmcli", "connection", "modify", self.ssid, "802-11-wireless", "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "802-11-wireless-security.wep-key-type", "2", "ipv4.method", "shared"])
+				subprocess.check_output(["nmcli", "connection", "modify", self.ssid, "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "802-11-wireless-security.wep-key-type", "2", "ipv4.method", "shared"])
 			except (subprocess.CalledProcessError, OSError):
 				logger.log(":: Connection already exists!")
 
