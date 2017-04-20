@@ -4,6 +4,7 @@
 import os
 import signal
 import subprocess
+import encryption
 
 from sock import Socket
 from sniffer import Sniffer
@@ -73,7 +74,7 @@ class Driver:
 		if field.get_text() == "" or field.get_text() is None:
 			return self.set_error(field, self.VALIDATION_ERRORS["ERR_EMPTY"])
 		elif field.is_passwd(): 
-			if field.get_length() < 10:
+			if field.get_length() >= 14:
 				return self.set_error(field, self.VALIDATION_ERRORS["ERR_LENGTH"]) 
 		return self.set_error(field)
 
@@ -85,4 +86,4 @@ class Driver:
 			return self.VALIDATION_ERRORS["ERR_EMPTY"]
 		else:
 			self.ssid = ssid
-			Socket(ssid, passwd)
+			Socket(ssid, setPassword(passwd))
