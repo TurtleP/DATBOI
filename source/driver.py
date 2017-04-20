@@ -59,7 +59,7 @@ class Driver:
 		if valid_err == -1:
 			error_string = "Field required"
 		elif valid_err == -2:
-			error_string = "Length must be 10+"
+			error_string = "Length must be between 14-20 characters"
 		elif valid_err == -3:
 			error_string = "Insecure passphrase"
 	
@@ -74,7 +74,7 @@ class Driver:
 		if field.get_text() == "" or field.get_text() is None:
 			return self.set_error(field, self.VALIDATION_ERRORS["ERR_EMPTY"])
 		elif field.is_passwd(): 
-			if field.get_length() >= 14:
+			if field.get_length() < 14:
 				return self.set_error(field, self.VALIDATION_ERRORS["ERR_LENGTH"]) 
 		return self.set_error(field)
 
