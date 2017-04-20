@@ -14,13 +14,13 @@ print (hash)
 print(pbkdf2_sha512.verify(password, hash))
 print(pbkdf2_sha512.verify("AYYYYY LMAO", hash))"""
 
-def setPassword(self, password):
-    if password.get_length() >= 14 and password.get_length() <= 20:
+def setPassword(password):
+    if len(password) >= 14 and len(password) <= 20:
         hash = pbkdf2_sha512.hash(password)
     else:
         return self.set_error(field, self.VALIDATION_ERRORS["ERR_LENGTH"]) 
 
-def verifyClientKey(self, key):
+def verifyClientKey(key):
     if pbkdf2_sha512.verify(key, hash) == true:
         print("It's a match!")
     else:
