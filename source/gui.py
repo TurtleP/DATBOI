@@ -111,20 +111,29 @@ stop_button = PhotoImage(file="assets/stop.png")
 ###END MAIN
 
 ###CONNECTIONS PAGE
-connections=list()
 def update_clients():
+	connections=list()
 	sp=subprocess.Popen(["arp", "-i", ssid_textbox.get_text()], stdout=subprocess.PIPE)
 	if not sp is None:
 		client_output=re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", sp.communicate()[0].decode("utf-8"))
-		for i in range(len(client_output.groups())):
-			connections.append(client_output.group(i))
-update_clients()
+		try:
+			client_text = "No connections found"
+			for i in range(len(client_output.groups())):
+				connections.append(client_output.group(i))
+			client_text = "\n".join(connections)
+		except TypeError:
+			client_text = "No connections found"
+
+		add_item(renderCanvas.create_text(4, 4, fill="#FFFFFF", text=client_text, anchor="nw", font=("assets/Roboto-Regular.ttf", 12, "normal")), 1)
+
+#update_clients()
 
 ###END CONNECTIONS PAGE
+
 ###ABOUT PAGE
 
-add_item(renderCanvas.create_text(4, 4, fill="#FFFFFF", text="DATBOI", anchor="nw", font=("assets/Roboto-Regular.ttf", 24, "normal")), 2)
-add_item(renderCanvas.create_text(125, 3, fill="#FFFFFF", text="Device Allowing Transfer Between\nOther Internet Devices", anchor="nw", font=("assets/Roboto-Regular.ttf", 12, "normal")), 2)
+add_item(renderCanvas.create_text(4, 0.5, fill="#FFFFFF", text="DATBOI", anchor="nw", font=("assets/Roboto-Regular.ttf", 24, "normal")), 2)
+add_item(renderCanvas.create_text(135, 4, fill="#FFFFFF", text="Device Allowing Transfer Between\nOther Internet Devices", anchor="nw", font=("assets/Roboto-Regular.ttf", 10, "normal")), 2)
 authors = [
 	"Colby Outccalt",
 	"Jeremy Postelnek",
@@ -133,10 +142,11 @@ authors = [
 	"Asad Arif"
 ]
 for i in range(len(authors)):
-	add_item(renderCanvas.create_text(4, 80+(i*24), fill="#FFFFFF", text="• " + authors[i], anchor="nw", font=("assets/Roboto-Regular.ttf", 16, "normal")), 2)
-add_item(renderCanvas.create_text(4, 215, fill="#FFFFFF", text="This code is licensed under the MIT Open Source\nLicense. © 2017 DATBOI Inc.", anchor="nw", font=("assets/Roboto-Regular.ttf", 12, "normal")), 2)
+	add_item(renderCanvas.create_text(4, 70 + (i * 24), fill="#FFFFFF", text="• " + authors[i], anchor="nw", font=("assets/Roboto-Regular.ttf", 14, "normal")), 2)
+add_item(renderCanvas.create_text(4, 224, fill="#FFFFFF", text="This code is licensed under the MIT Open Source\nLicense. © 2017 DATBOI Inc.", anchor="nw", font=("assets/Roboto-Regular.ttf", 10, "normal")), 2)
 
 ###END ABOUT PAGE
+
 ####DEBUG TAB
 add_item(renderCanvas.create_image(4, 4, anchor="nw", image=search_image), 3)
 debug_id = renderCanvas.create_text(4, 32, fill="#FFFFFF", text=logger.get_logs(), anchor="nw", font=("assets/Roboto-Regular.ttf", 10, "normal"))
@@ -144,7 +154,7 @@ add_item(debug_id, 3)
 
 def update_logs():
 	renderCanvas.itemconfig(debug_id, text=logger.get_logs())
-	top.after(500, update_logs)
+	top.after(1000, update_logs)
 
 search_textbox = TextBox(renderCanvas, 24, 4, 120, "Filter", False, 10)
 for item in search_textbox.get_items():

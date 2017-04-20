@@ -86,4 +86,4 @@ class Driver:
 			return self.VALIDATION_ERRORS["ERR_EMPTY"]
 		else:
 			self.ssid = ssid
-			Socket(ssid, setPassword(passwd))
+			Socket(ssid, passwd)
