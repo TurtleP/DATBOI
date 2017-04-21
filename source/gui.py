@@ -127,6 +127,7 @@ def update_clients():
 		add_item(renderCanvas.create_text(4, 4, fill="#FFFFFF", text=client_text, anchor="nw", font=("assets/Roboto-Regular.ttf", 12, "normal")), 1)
 
 #update_clients()
+###To do Blacklist^^^
 
 ###END CONNECTIONS PAGE
 
