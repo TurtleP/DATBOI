@@ -45,9 +45,9 @@ def parse(pack):
 			tcp_header = unpack('!HHLLBBHHH', tcp_header_bytes)
 
 			if tcp_header[0] == 443: # HTTP
-				print("Destination port: " + str(tcp_header[1] + " Sequence: " + str(tcp_header[2]) + " Acknowledge: " + tcp_header[3])
+				print("Destination port: " + str(tcp_header[1] + " Sequence: " + str(tcp_header[2]) + " Acknowledge: " + tcp_header[3]))
 
 #start sniffing packets
-while(1) :
+while(1):
 	(header, packet) = cap.next()
 	parse(packet)
