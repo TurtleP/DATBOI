@@ -40,12 +40,12 @@ def parse(pack):
 
 		if ip_protocol == 6:
 			tcp = ip_header_length + eth_length
-			tcp_header_bytes = packet[t:t+20]
+			tcp_header_bytes = packet[tcp:tcp+20]
 
 			tcp_header = unpack('!HHLLBBHHH', tcp_header_bytes)
 
 			if tcp_header[0] == 443: # HTTP
-				print("Destination port: " + str(tcp_header[1] + " Sequence: " + str(tcp_header[2]) + " Acknowledge: " + tcp_header[3]))
+				print("Destination port: " + str(tcp_header[1]) + " Sequence: " + str(tcp_header[2]) + " Acknowledge: " + str(tcp_header[3]))
 
 #start sniffing packets
 while(1):
