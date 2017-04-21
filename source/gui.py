@@ -3,15 +3,19 @@ from textbox import TextBox
 from button import CButton
 from driver import Driver
 from init import logger
+from client import Client
+
 import re
 import subprocess
+
+
 DATBOI = Driver()
 
 # Define the frame
 top = Tk()
 top.resizable(width=False, height=False)
 top.geometry('{}x{}'.format(400, 256)) # Formatted as W * H
-top.wm_title("DATBOI v0.5.0")
+top.wm_title("DATBOI v0.8.0")
 top["background"] = "#263238"
 
 buttons = []
@@ -79,7 +83,7 @@ def add_item(item, indx=currentTab):
 ####MAIN TAB
 renderCanvas.create_image(270, 130, image=datBoi)
 
-add_item(renderCanvas.create_text(30, 24, fill="#FFFFFF", text="Access Point Configuration", anchor="w", font=("assets/Roboto-Regular", 18, "normal")))
+add_item(renderCanvas.create_text(22, 4, fill="#FFFFFF", text="Access Point Configuration", anchor="nw", font=("assets/Roboto-Regular", 18, "normal")))
 	
 ssid_textbox = TextBox(renderCanvas, 112, 80, 144, "SSID Name")
 passwd_textbox = TextBox(renderCanvas, 112, 145, 144, "Password", True)
@@ -111,6 +115,8 @@ stop_button = PhotoImage(file="assets/stop.png")
 ###END MAIN
 
 ###CONNECTIONS PAGE
+add_item(renderCanvas.create_text(72, 4, fill="#FFFFFF", text="Connected Devices", anchor="nw", font=("assets/Roboto-Regular", 18, "normal")), 1)
+
 def update_clients():
 	connections=list()
 	sp=subprocess.Popen(["arp", "-i", ssid_textbox.get_text()], stdout=subprocess.PIPE)
@@ -136,11 +142,11 @@ def update_clients():
 add_item(renderCanvas.create_text(4, 0.5, fill="#FFFFFF", text="DATBOI", anchor="nw", font=("assets/Roboto-Regular.ttf", 24, "normal")), 2)
 add_item(renderCanvas.create_text(135, 4, fill="#FFFFFF", text="Device Allowing Transfer Between\nOther Internet Devices", anchor="nw", font=("assets/Roboto-Regular.ttf", 10, "normal")), 2)
 authors = [
-	"Colby Outccalt",
-	"Jeremy Postelnek",
-	"Curtis Parker",
-	"Nicholas-Roache",
 	"Asad Arif"
+	"Colby Outcalt",
+	"Curtis Parker",
+	"Jeremy Postelnek",
+	"Nicholas-Roache",
 ]
 for i in range(len(authors)):
 	add_item(renderCanvas.create_text(4, 70 + (i * 24), fill="#FFFFFF", text="• " + authors[i], anchor="nw", font=("assets/Roboto-Regular.ttf", 14, "normal")), 2)
@@ -180,6 +186,9 @@ def click(event):
 		
 		if start_button.click(x, y):
 			start_button.func()
+	elif currentTab == 1:
+		if client.click(x, y):
+			client.get_button().func()
 	elif currentTab == 3:
 		if search_textbox.click(x, y):
 			search_textbox.set_active(True, True)
