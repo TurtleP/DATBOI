@@ -36,7 +36,7 @@ def parse(pack):
 
 		ip_header_length = ip_header[0] & 0xF * 4
 
-		print("IP Protocol: " + str(protocol) + " v" + str(version) + " length: " + str(ip_header_length)) 
+		print("IP_Protocol: " + str(protocol) + " v" + str(version) + " length: " + str(ip_header_length)) 
 
 		if ip_protocol == 6:
 			tcp = ip_header_length + eth_length
