@@ -51,5 +51,3 @@ def parse(pack):
 while(1) :
 	(header, packet) = cap.next()
 	parse(packet)
-
-

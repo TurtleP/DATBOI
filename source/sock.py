@@ -89,4 +89,3 @@ class Socket:
 				logger.log("Connection successful")
 		except subprocess.CalledProcessError:
 			logger.log(":: Failed to start hotspot " + self.ssid)
-
