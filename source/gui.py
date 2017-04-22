@@ -117,22 +117,38 @@ stop_button = PhotoImage(file="assets/stop.png")
 ###CONNECTIONS PAGE
 add_item(renderCanvas.create_text(72, 4, fill="#FFFFFF", text="Connected Devices", anchor="nw", font=("assets/Roboto-Regular", 18, "normal")), 1)
 
+client_text = renderCanvas.create_text(4, 48, fill="#FFFFFF", text="", anchor="nw", font=("assets/Roboto-Regular.ttf", 12, "normal"))
+add_item(client_text, 1)
+
+connections = list()
 def update_clients():
-	connections=list()
-	sp=subprocess.Popen(["arp", "-i", ssid_textbox.get_text()], stdout=subprocess.PIPE)
-	if not sp is None:
-		client_output=re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", sp.communicate()[0].decode("utf-8"))
-		try:
-			client_text = "No connections found"
-			for i in range(len(client_output.groups())):
-				connections.append(client_output.group(i))
-			client_text = "\n".join(connections)
-		except TypeError:
-			client_text = "No connections found"
+	sp = None
+	client_output_text = "No connections found"
 
-		add_item(renderCanvas.create_text(4, 4, fill="#FFFFFF", text=client_text, anchor="nw", font=("assets/Roboto-Regular.ttf", 12, "normal")), 1)
+	client_output = list()
+	
+	if ssid_textbox.get_text() != "":
+		sp = subprocess.Popen(["arp", "-i", ssid_textbox.get_text()], stdout=subprocess.PIPE)
+		arp_output = sp.communicate()[0].decode("utf-8")
+		client_output = re.findall("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|\w+\.\w+\.\w+", arp_output)
+		client_macs = re.findall("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", arp_output)
 
-#update_clients()
+	if len(client_output) > 0:
+		for i in range(len(connections)):
+			connections[i].clear()
+		del connections[0:]
+
+		for i in range(len(client_output)):
+			connections.append(Client(renderCanvas, 6, 48 + (i * 32), client_output[i], client_macs[i]))
+		client_output_text = ""
+	else:
+		client_output_text = "No connections found"
+
+	renderCanvas.itemconfig(client_text, text=client_output_text)
+
+	top.after(1000, update_clients)
+
+update_clients()
 ###To do Blacklist^^^
 
 ###END CONNECTIONS PAGE
@@ -187,8 +203,9 @@ def click(event):
 		if start_button.click(x, y):
 			start_button.func()
 	elif currentTab == 1:
-		if client.click(x, y):
-			client.get_button().func()
+		for i in range(len(connections)):
+			if connections[i].click(x, y):
+				connections[i].get_button().func()
 	elif currentTab == 3:
 		if search_textbox.click(x, y):
 			search_textbox.set_active(True, True)
