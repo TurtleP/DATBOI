@@ -16,7 +16,7 @@ class Socket:
 		@ssid: SSID to connect to
 		@passwd: Router password
 		"""
-
+		self.mac_addr=None
 		self.ssid = ssid
 		self.passwd = passwd # Will be enforced to what we determined
 		self.dev = None
@@ -65,7 +65,7 @@ class Socket:
 			logger.log(":: Acess Point BSSID: " + bssid)
 
 			ether_egrep = subprocess.Popen(["ifconfig", self.ssid], stdout=subprocess.PIPE)
-			mac_addr = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", ether_egrep.communicate()[0].decode("utf-8")).group(0).upper()
+			self.mac_addr = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", ether_egrep.communicate()[0].decode("utf-8")).group(0).upper()
 
 			logger.log(":: Cloned MAC Address: " + mac_addr)
 
@@ -74,7 +74,7 @@ class Socket:
 			try:	
 				logger.log(":: Connection added.")
 				subprocess.check_output(["nmcli", "connection", "add", "con-name", self.ssid, "type", "wifi", "ifname", self.ssid, "ssid", self.ssid])
-				subprocess.check_output(["nmcli", "connection", "modify", self.ssid, "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "802-11-wireless-security.wep-key-type", "2", "ipv4.method", "shared"])
+				subprocess.check_output(["nmcli", "connection", "modify", self.ssid, "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", self.mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "802-11-wireless-security.wep-key-type", "2", "ipv4.method", "shared"])
 			except (subprocess.CalledProcessError, OSError):
 				logger.log(":: Connection already exists!")
 
@@ -87,3 +87,6 @@ class Socket:
 				logger.log("Connection successful")
 		except subprocess.CalledProcessError:
 			logger.log(":: Failed to start hotspot " + self.ssid)
+
+	def getMAC(self):
+		return self.mac_addr

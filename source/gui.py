@@ -135,7 +135,12 @@ def update_clients():
 		client_output = re.findall("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|\w+\.\w+\.\w+", arp_output)
 		client_macs = re.findall("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", arp_output)
 
-	
+	if len(blacklist)>0:
+		jojo=subprocess.Popen(["ip", "addr", "show", ssid_textbox.get_text()], stdout=subprocess.PIPE)
+		datboi_mac=re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", jojo.communicate()[0].decode("utf-8"))
+		for i in range(len(blacklist)):
+			Client(renderCanvas, 6, 48 + (i * 32), blacklist[i][0], blacklist[i][1])
+			connections.append(Client(renderCanvas, 6, 48 + (i * 32), blacklist[i][0], blacklist[i][1], True, datboi_mac))
 	if len(client_output) > 0:
 		for i in range(len(connections)):
 			connections[i].clear()
@@ -209,7 +214,7 @@ def click(event):
 	elif currentTab == 1:
 		for i in range(len(connections)):
 			if connections[i].click(x, y):
-				blacklist.append(connections[i].get_mac())
+				blacklist.append(list(connections[i].hostname, connections[i].get_mac()))
 				connections[i].get_button().func()
 	elif currentTab == 3:
 		if search_textbox.click(x, y):
