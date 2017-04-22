@@ -154,8 +154,6 @@ def update_clients():
 	top.after(1000, update_clients)
 
 update_clients()
-###To do Blacklist^^^
-
 ###END CONNECTIONS PAGE
 
 ###ABOUT PAGE
