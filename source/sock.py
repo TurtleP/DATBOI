@@ -16,12 +16,10 @@ class Socket:
 		@ssid: SSID to connect to
 		@passwd: Router password
 		"""
-		
+
 		self.ssid = ssid
 		self.passwd = passwd # Will be enforced to what we determined
 		self.dev = None
-
-		self.start_time = time.time()
 
 		self.__add_iw()
 	

@@ -121,6 +121,7 @@ client_text = renderCanvas.create_text(4, 48, fill="#FFFFFF", text="", anchor="n
 add_item(client_text, 1)
 
 connections = list()
+blacklist = list()
 def update_clients():
 	sp = None
 	client_output_text = "No connections found"
@@ -208,6 +209,7 @@ def click(event):
 	elif currentTab == 1:
 		for i in range(len(connections)):
 			if connections[i].click(x, y):
+				blacklist.append(connections[i].get_mac())
 				connections[i].get_button().func()
 	elif currentTab == 3:
 		if search_textbox.click(x, y):
