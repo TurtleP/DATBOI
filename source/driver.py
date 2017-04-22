@@ -59,7 +59,7 @@ class Driver:
 		if valid_err == -1:
 			error_string = "Field required"
 		elif valid_err == -2:
-			error_string = "Length must be between 14-20 characters"
+			error_string = "Length must be at least 14 characters"
 		elif valid_err == -3:
 			error_string = "Insecure passphrase"
 	
