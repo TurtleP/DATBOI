@@ -126,20 +126,25 @@ def update_clients():
 	client_output_text = "No connections found"
 
 	client_output = list()
-	
+	client_macs = list()
+
 	if ssid_textbox.get_text() != "":
 		sp = subprocess.Popen(["arp", "-i", ssid_textbox.get_text()], stdout=subprocess.PIPE)
 		arp_output = sp.communicate()[0].decode("utf-8")
 		client_output = re.findall("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|\w+\.\w+\.\w+", arp_output)
 		client_macs = re.findall("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", arp_output)
 
+	
 	if len(client_output) > 0:
 		for i in range(len(connections)):
 			connections[i].clear()
 		del connections[0:]
 
 		for i in range(len(client_output)):
-			connections.append(Client(renderCanvas, 6, 48 + (i * 32), client_output[i], client_macs[i]))
+			try:
+				connections.append(Client(renderCanvas, 6, 48 + (i * 32), client_output[i], client_macs[i]))
+			except IndexError:
+				print("rip")
 		client_output_text = ""
 	else:
 		client_output_text = "No connections found"

