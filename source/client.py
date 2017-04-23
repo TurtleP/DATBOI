@@ -22,6 +22,9 @@ class Client:
 
 		self.button.set_image(self.graphic)
 
+		if kicked:
+			self.button.set_color(255, 0, 0)
+
 		self.text_id = parent.create_text(x + 32, y + 3, fill="#FFFFFF", anchor="nw", text=hostname, font=("assets/Roboto-Regular.ttf", 12, "normal"))
 
 	def click(self, x, y):

@@ -16,6 +16,7 @@ class Socket:
 		@ssid: SSID to connect to
 		@passwd: Router password
 		"""
+
 		self.mac_addr=None
 		self.ssid = ssid
 		self.passwd = passwd # Will be enforced to what we determined
@@ -67,7 +68,7 @@ class Socket:
 			ether_egrep = subprocess.Popen(["ifconfig", self.ssid], stdout=subprocess.PIPE)
 			self.mac_addr = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", ether_egrep.communicate()[0].decode("utf-8")).group(0).upper()
 
-			logger.log(":: Cloned MAC Address: " + mac_addr)
+			logger.log(":: Cloned MAC Address: " + self.mac_addr)
 
 			logger.log(":: Creating connection..")
 

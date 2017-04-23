@@ -167,7 +167,7 @@ update_clients()
 add_item(renderCanvas.create_text(4, 0.5, fill="#FFFFFF", text="DATBOI", anchor="nw", font=("assets/Roboto-Regular.ttf", 24, "normal")), 2)
 add_item(renderCanvas.create_text(135, 4, fill="#FFFFFF", text="Device Allowing Transfer Between\nOther Internet Devices", anchor="nw", font=("assets/Roboto-Regular.ttf", 10, "normal")), 2)
 authors = [
-	"Asad Arif"
+	"Asad Arif",
 	"Colby Outcalt",
 	"Curtis Parker",
 	"Jeremy Postelnek",
@@ -214,7 +214,11 @@ def click(event):
 	elif currentTab == 1:
 		for i in range(len(connections)):
 			if connections[i].click(x, y):
-				blacklist.append(list(connections[i].hostname, connections[i].get_mac()))
+				if not connections[i].kicked:
+					blacklist.append(list(connections[i].hostname, connections[i].get_mac()))
+				else:
+					blacklist.pop(i)
+
 				connections[i].get_button().func()
 	elif currentTab == 3:
 		if search_textbox.click(x, y):

@@ -27,7 +27,11 @@ class CButton:
 		return self.pressed
 
 	def set_image(self, img):
+		self.graphic = img
 		self.parent.itemconfig(self.graphic_id, image=img)
+	
+	def set_color(self, r, g, b):
+		fill(self.graphic, (r, g, b))
 
 	def get_tag(self):
 		return self.graphic_id
