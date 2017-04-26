@@ -10,7 +10,7 @@ import time
 from init import logger
 
 class Socket:
-	def __init__(self, ssid, passwd):
+	def __init__(self, ssid, passwd, driver):
 		"""
 		Initialize the Socket
 		@ssid: SSID to connect to
@@ -21,6 +21,8 @@ class Socket:
 		self.ssid = ssid
 		self.passwd = passwd # Will be enforced to what we determined
 		self.dev = None
+
+		self.driver = driver
 
 		self.__add_iw()
 	
@@ -53,31 +55,11 @@ class Socket:
 			try:
 				subprocess.check_output(["nmcli", "connection", "up", self.ssid])
 			except subprocess.CalledProcessError:
-				logger.log(":: Failed to start hotspot " + self.ssid)
+				logger.log(":: Failed to start hotspot, remaking " + self.ssid)
+				subprocess.check_output(["nmcli", "connection", "delete", self.ssid])
+				#self.__create_ap_config()
 		else:
-			bssid_proccess = subprocess.Popen(["iw", self.dev, "scan"], stdout=subprocess.PIPE)
-			egrep_bssid = subprocess.Popen(["egrep", "^BSS|SSID:"], stdin=bssid_proccess.stdout, stdout=subprocess.PIPE)
-			egrep_associated = subprocess.Popen(["egrep", "associated"], stdin=egrep_bssid.stdout, stdout=subprocess.PIPE)
-
-			bssid_proccess.stdout.close()
-			egrep_bssid.stdout.close()
-			bssid = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", egrep_associated.communicate()[0].decode("utf-8")).group(0).upper()
-
-			logger.log(":: Acess Point BSSID: " + bssid)
-
-			ether_egrep = subprocess.Popen(["ifconfig", self.ssid], stdout=subprocess.PIPE)
-			self.mac_addr = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", ether_egrep.communicate()[0].decode("utf-8")).group(0).upper()
-
-			logger.log(":: Cloned MAC Address: " + self.mac_addr)
-
-			logger.log(":: Creating connection..")
-
-			try:	
-				logger.log(":: Connection added.")
-				subprocess.check_output(["nmcli", "connection", "add", "con-name", self.ssid, "type", "wifi", "ifname", self.ssid, "ssid", self.ssid])
-				subprocess.check_output(["nmcli", "connection", "modify", self.ssid, "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", self.mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "802-11-wireless-security.wep-key-type", "2", "ipv4.method", "shared"])
-			except (subprocess.CalledProcessError, OSError):
-				logger.log(":: Connection already exists!")
+			self.__create_ap_config()
 
 		try:
 			subprocess.check_output(["nmcli", "connection", "up", self.ssid])
@@ -85,9 +67,42 @@ class Socket:
 			if re.search(self.ssid, config) is None:
 				logger.log("Failed to connect")
 			else:
+				self.driver.set_status(2)
 				logger.log("Connection successful")
 		except subprocess.CalledProcessError:
 			logger.log(":: Failed to start hotspot " + self.ssid)
+			self.driver.set_status(0)
 
-	def getMAC(self):
+	def __create_ap_config(self):
+		bssid_proccess = subprocess.Popen(["iw", self.dev, "scan"], stdout=subprocess.PIPE)
+		egrep_bssid = subprocess.Popen(["egrep", "^BSS|SSID:"], stdin=bssid_proccess.stdout, stdout=subprocess.PIPE)
+		egrep_associated = subprocess.Popen(["egrep", "associated"], stdin=egrep_bssid.stdout, stdout=subprocess.PIPE)
+
+		bssid_proccess.stdout.close()
+		egrep_bssid.stdout.close()
+		bssid = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", egrep_associated.communicate()[0].decode("utf-8")).group(0).upper()
+
+		logger.log(":: Acess Point BSSID: " + bssid)
+
+		ether_egrep = subprocess.Popen(["ifconfig", self.ssid], stdout=subprocess.PIPE)
+		self.mac_addr = re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", ether_egrep.communicate()[0].decode("utf-8")).group(0).upper()
+
+		logger.log(":: Cloned MAC Address: " + self.mac_addr)
+
+		logger.log(":: Creating connection..")
+
+		try:	
+			logger.log(":: Connection added.")
+			subprocess.check_output(["nmcli", "connection", "add", "con-name", self.ssid, "type", "wifi", "ifname", self.ssid, "ssid", self.ssid])
+			subprocess.check_output(["nmcli", "connection", "modify", self.ssid, "802-11-wireless.ssid", self.ssid, "802-11-wireless.mode", "ap", "802-11-wireless.bssid", bssid, "802-11-wireless.cloned-mac-address", self.mac_addr, "802-11-wireless-security.key-mgmt", "wpa-psk", "802-11-wireless-security.wep-key0", self.passwd, "802-11-wireless-security.psk", self.passwd, "802-11-wireless-security.wep-key-type", "2", "ipv4.method", "shared"])
+		except (subprocess.CalledProcessError, OSError):
+			logger.log(":: Connection already exists!")
+	
+	def get_mac_addr(self):
 		return self.mac_addr
+	
+	def get_dev(self):
+		return self.dev
+
+	def get_interface(self):
+		return self.ssid

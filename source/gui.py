@@ -4,10 +4,9 @@ from button import CButton
 from driver import Driver
 from init import logger
 from client import Client
-
+import json
 import re
 import subprocess
-
 
 DATBOI = Driver()
 
@@ -83,7 +82,7 @@ def add_item(item, indx=currentTab):
 ####MAIN TAB
 renderCanvas.create_image(270, 130, image=datBoi)
 
-add_item(renderCanvas.create_text(22, 4, fill="#FFFFFF", text="Access Point Configuration", anchor="nw", font=("assets/Roboto-Regular", 18, "normal")))
+add_item(renderCanvas.create_text(30, 4, fill="#FFFFFF", text="Access Point Configuration", anchor="nw", font=("assets/Roboto-Regular", 18, "normal")))
 	
 ssid_textbox = TextBox(renderCanvas, 112, 80, 144, "SSID Name")
 passwd_textbox = TextBox(renderCanvas, 112, 145, 144, "Password", True)
@@ -101,16 +100,21 @@ def load_DATBOI():
 	if ssid_is_valid and pass_is_valid:
 		start_button.toggle()
 
-		if start_button.get_pressed():
-			start_button.set_image(stop_button)
-			DATBOI.run(ssid_textbox.get_text(), passwd_textbox.get_text())
-		else:
-			start_button.set_image(start_button.graphic)
+		if DATBOI.get_status() == 0:
+			if start_button.get_pressed():
+				start_button.set_image(stop_button)
+				
+				ssid, passwd = ssid_textbox.get_text(), passwd_textbox.get_text()
+
+				DATBOI.run(ssid, passwd)
+		elif DATBOI.get_status() == 2:
+			start_button.set_image(start_graphic)
 			DATBOI.order_66()
 
 start_button = CButton(renderCanvas, 172, 210, load_DATBOI)
 add_item(start_button.get_tag())
 
+start_graphic = PhotoImage(file="assets/start.png")
 stop_button = PhotoImage(file="assets/stop.png")
 ###END MAIN
 
@@ -122,36 +126,46 @@ add_item(client_text, 1)
 
 connections = list()
 blacklist = list()
+#ssid_textbox.set_text("DATBOI")
 def update_clients():
 	sp = None
 	client_output_text = "No connections found"
 
 	client_output = list()
-	client_macs = list()
-
 	if ssid_textbox.get_text() != "":
 		sp = subprocess.Popen(["arp", "-i", ssid_textbox.get_text()], stdout=subprocess.PIPE)
-		arp_output = sp.communicate()[0].decode("utf-8")
-		client_output = re.findall("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|\w+\.\w+\.\w+", arp_output)
-		client_macs = re.findall("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", arp_output)
+		awk = subprocess.Popen(["awk", '{ print $1"-"$3 }'], stdin=sp.stdout, stdout=subprocess.PIPE)
 
-	if len(blacklist)>0:
-		jojo=subprocess.Popen(["ip", "addr", "show", ssid_textbox.get_text()], stdout=subprocess.PIPE)
-		datboi_mac=re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", jojo.communicate()[0].decode("utf-8"))
-		for i in range(len(blacklist)):
-			Client(renderCanvas, 6, 48 + (i * 32), blacklist[i][0], blacklist[i][1])
-			connections.append(Client(renderCanvas, 6, 48 + (i * 32), blacklist[i][0], blacklist[i][1], True, datboi_mac))
+		for line in awk.stdout:
+			data = list(line.decode("utf-8").split("-"))
+
+			if re.search("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|\w+\.\w+\.\w+", data[0]) and re.search("(([a-f0-9]{2}:){5}([a-f0-9]{2}))", data[1]):
+				data[1] = re.sub("\n", "", data[1])
+				client_output.append([data[0], data[1]])
+	 
 	if len(client_output) > 0:
 		for i in range(len(connections)):
 			connections[i].clear()
 		del connections[0:]
 
-		for i in range(len(client_output)):
-			try:
-				connections.append(Client(renderCanvas, 6, 48 + (i * 32), client_output[i], client_macs[i]))
-			except IndexError:
-				print("rip")
-		client_output_text = ""
+		if currentTab == 1:
+			if len(blacklist) > 0:
+				for i in range(len(blacklist)):
+					temp_client = Client(renderCanvas, 6, 48 + (i * 32), blacklist[i][0], blacklist[i][1], True, DATBOI.get_socket().get_mac_addr())
+					connections.append(temp_client)
+
+			for i in range(len(client_output)):
+				passd = True
+
+				if len(blacklist) > 0:
+					if blacklist[i][1] == client_output[i][1]:
+						passd = False
+
+				if passd:
+					temp_client = Client(renderCanvas, 6, 48 + ((len(blacklist) + i) * 32), client_output[i][0], client_output[i][1])
+					connections.append(temp_client)
+
+			client_output_text = ""
 	else:
 		client_output_text = "No connections found"
 
@@ -213,13 +227,25 @@ def click(event):
 			start_button.func()
 	elif currentTab == 1:
 		for i in range(len(connections)):
-			if connections[i].click(x, y):
-				if not connections[i].kicked:
-					blacklist.append(list(connections[i].hostname, connections[i].get_mac()))
-				else:
-					blacklist.pop(i)
+			try:
+				if connections[i].click(x, y):
+					if not connections[i].get_kicked():
+						blacklist.append([connections[i].hostname, connections[i].get_mac()])
+						
+						with open("blacklist.txt", "w") as outfile:
+							json.dump(blacklist, outfile, indent=4)
+					else:
+						blacklist.pop(i)
+					
+					#client=subprocess.Popen(["arp-scan", "-I", DATBOI.get_socket().get_interface(), "-l"], stdout=subprocess.PIPE)
+					#mac_addr = subprocess.Popen(["grep", "-m", "1", connections[i].get_mac()], stdin=client.stdout, stdout=subprocess.PIPE)
+					#print(mac_addr.communicate()[0].decode("utf-8"))
+					
+					connections[i].get_button().func()
+					connections.pop(i)
+			except IndexError:
+				print("Index error")
 
-				connections[i].get_button().func()
 	elif currentTab == 3:
 		if search_textbox.click(x, y):
 			search_textbox.set_active(True, True)

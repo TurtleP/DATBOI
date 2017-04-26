@@ -4,7 +4,6 @@
 import os
 import signal
 import subprocess
-import encryption
 
 from sock import Socket
 from sniffer import Sniffer
@@ -20,8 +19,11 @@ class Driver:
 			"ERR_LENGTH": -2,
 			"ERR_INSECURE": -3
 		}
+
 		logger.log("Here come DATBOI")
 		self.ssid = None
+		self.status = 0
+		self.socket = None
 
 	#Wi-Fi Kill Switch
 	def order_66(self):
@@ -30,10 +32,18 @@ class Driver:
 		logger.log("It will be done my lord.")
 		if self.killswitch_engage:
 			subprocess.check_output(["nmcli", "connection", "down", self.ssid])
+			self.set_status(0)
 		else:
 			subprocess.check_output(["nmcli", "connection", "up", self.ssid])
+			self.set_status(2)
 
 		self.killswitch_engage != self.killswitch_engage
+
+	def get_status(self):
+		return self.status
+
+	def set_status(self, status):
+		self.status = status
 
 	# Read Wi-Fi config (SSID/PASS)
 	def __read_config(self, conf):
@@ -45,14 +55,14 @@ class Driver:
 			self.__write_config()
 
 	# Write Wi-Fi config(SSID/PASS)
-	def __write_config(self):
+	def write_config(self, data):
 		"""
-		Asks for input and creates a new config
-		with this data (SSID, PASSWD)
+		Takes sensitive data that's been hashed
+		the heck out of and write it out ¯\_(ツ)_/¯
 		"""
 
-		my_config = open("conf", "w+")
-		my_sniffer = Sniffer()
+		my_config = open("config.datboi", "w+")
+		my_config.write(json.dumps(data, sort_keys=True, indent=4))
 
 	def set_error(self, field, valid_err=0):
 		error_string = None
@@ -86,4 +96,8 @@ class Driver:
 			return self.VALIDATION_ERRORS["ERR_EMPTY"]
 		else:
 			self.ssid = ssid
-			Socket(ssid, passwd)
+			self.set_status(1)
+			self.socket = Socket(ssid, passwd, self)
+	
+	def get_socket(self):
+		return self.socket

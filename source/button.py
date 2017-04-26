@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import PhotoImage
 
 class CButton:
 	def __init__(self, parent, x, y, func):
@@ -29,9 +30,9 @@ class CButton:
 	def set_image(self, img):
 		self.graphic = img
 		self.parent.itemconfig(self.graphic_id, image=img)
-	
-	def set_color(self, r, g, b):
-		fill(self.graphic, (r, g, b))
 
 	def get_tag(self):
 		return self.graphic_id
+
+	def clear(self):
+		self.parent.delete(self.graphic_id)

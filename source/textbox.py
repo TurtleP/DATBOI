@@ -4,7 +4,7 @@ from tkinter import *
 import re
 
 class TextBox:
-	def __init__(self, parent, x, y, width, hint, passwd=False, maxlen=13):
+	def __init__(self, parent, x, y, width, hint, passwd=False, maxlen=14):
 		self.x = x
 		self.y = y
 		self.width = width
@@ -84,6 +84,14 @@ class TextBox:
 
 	def get_text(self):
 		return self.text
+
+	def set_text(self, text):
+		new_text = text
+		self.text = text
+		if self.passwd:
+			new_text = re.sub("\w", "*", text)
+
+		self.parent.itemconfig(self.id, fill="#FFFFFF", text=new_text)
 
 	def clear_error(self):
 		self.parent.itemconfig(self.error_id, text="")
